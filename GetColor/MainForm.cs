@@ -74,9 +74,7 @@ namespace GetColor
         private TextBox txtRGBdec;
 
         private Label label3;
-
-
-
+        
         public MainForm()
         {
             InitializeComponent();
@@ -120,7 +118,13 @@ namespace GetColor
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("小丸为获取用于ASS字幕的BGR颜色值而修改此软件。\n原作者：周振兴 Blog：http://www.xianfen.net \n发布日期：2013年12月11日\n2019年5月15日更新 菜姬修改以适配高DPI 修复部分区域白块问题", "关于 小丸拾色器", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            const string title = "关于 小丸拾色器";
+            const string info = @"小丸为获取用于ASS字幕的BGR颜色值而修改此软件。
+原作者：周振兴 Blog：http://www.xianfen.net 
+发布日期：2013年12月11日
+2019年05月15日更新 适配高DPI 修复部分区域白块问题(菜姬)
+2022年04月14日更新 支持多显示器 但多显示器下无法取任务栏的颜色(菜姬)";
+            MessageBox.Show(info, title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -130,7 +134,7 @@ namespace GetColor
 
         private void lnkCopyRights_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.xianfen.net");
+            Process.Start("https://github.com/Masaiki/GetColor");
         }
 
         private void lblColor_Click(object sender, EventArgs e)
