@@ -30,15 +30,14 @@ namespace GetColor
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr ptr);
         //调用
-        static public Bitmap GetFullScreen()
+        static public Bitmap GetFullScreen(int x, int y, int w, int h)
         {
-            Size sz = Screen.PrimaryScreen.Bounds.Size;
             IntPtr hDesk = GetDesktopWindow();
             IntPtr hSrce = GetWindowDC(hDesk);
             IntPtr hDest = CreateCompatibleDC(hSrce);
-            IntPtr hBmp = CreateCompatibleBitmap(hSrce, sz.Width, sz.Height);
+            IntPtr hBmp = CreateCompatibleBitmap(hSrce, w, h);
             IntPtr hOldBmp = SelectObject(hDest, hBmp);
-            bool b = BitBlt(hDest, 0, 0, sz.Width, sz.Height, hSrce, 0, 0, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+            bool b = BitBlt(hDest, 0, 0, w, h, hSrce, x, y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
             Bitmap bmp = Bitmap.FromHbitmap(hBmp);
             SelectObject(hDest, hOldBmp);
             DeleteObject(hBmp);

@@ -39,7 +39,7 @@ namespace GetColor
 
         private TextBox txtColorValue;
 
-        //private Rectangle rect;
+        private Rectangle rect;
 
         private Pen pen;
 
@@ -65,6 +65,9 @@ namespace GetColor
 
         public ColorPicker()
         {
+            for(int i = 0; i < Screen.AllScreens.Length; ++i)
+                rect = Rectangle.Union(rect, Screen.AllScreens[i].Bounds);
+
             InitializeComponent();
             pictureBox = new PictureBox();
             pictureBox.Dock = DockStyle.Fill;
@@ -73,7 +76,8 @@ namespace GetColor
             pictureBox.MouseMove += pictureBox_MouseMove;
             pictureBox.Cursor = Cursors.Cross;
             base.Controls.Add(pictureBox);
-            base.Size = new Size(0, 0);
+            base.Location = rect.Location;
+            base.Size = rect.Size;
             DoubleBuffered = true;
             base.Load += ColorPicker_Load;
             bmpZoom = new Bitmap(picZoom.Width, picZoom.Height);
@@ -87,14 +91,15 @@ namespace GetColor
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            Point mousePosition = Control.MousePosition;
+            Point mousePosition = e.Location;
+            Point bitmapPosition = new Point(mousePosition.X-rect.X, mousePosition.Y-rect.Y);
             lblXValue.Text = mousePosition.X.ToString();
             lblYValue.Text = mousePosition.Y.ToString();
-            Color pixel = bmp.GetPixel(mousePosition.X, mousePosition.Y);
+            Color pixel = bmp.GetPixel(bitmapPosition.X, bitmapPosition.Y);
             lblShowColor.BackColor = pixel;
             txtColorValue.Text = string.Format("#{0,2:X2}{1,2:X2}{2,2:X2}", pixel.R.ToString("X"), pixel.G.ToString("X"), pixel.B.ToString("X")).Replace(" ", "0");
             zoom.InterpolationMode = InterpolationMode.NearestNeighbor;
-            zoom.DrawImage(bmp, new Rectangle(0, 0, bmpZoom.Width, bmpZoom.Height), Control.MousePosition.X - bmpZoom.Width / (2 * zoomSize), Control.MousePosition.Y - bmpZoom.Height / (2 * zoomSize), bmpZoom.Width / zoomSize, bmpZoom.Height / zoomSize, GraphicsUnit.Pixel);
+            zoom.DrawImage(bmp, new Rectangle(0, 0, bmpZoom.Width, bmpZoom.Height), bitmapPosition.X - bmpZoom.Width / (2 * zoomSize), bitmapPosition.Y - bmpZoom.Height / (2 * zoomSize), bmpZoom.Width / zoomSize, bmpZoom.Height / zoomSize, GraphicsUnit.Pixel);
             zoom.DrawLine(pen, picZoom.Width / 2 - 1, 0, picZoom.Width / 2 - 1, picZoom.Height);
             zoom.DrawLine(pen, 0, picZoom.Height / 2 - 1, picZoom.Width, picZoom.Height / 2 - 1);
             picZoom.Refresh();
@@ -102,7 +107,7 @@ namespace GetColor
 
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            selectedColor = bmp.GetPixel(e.Location.X, e.Location.Y);
+            selectedColor = bmp.GetPixel(e.Location.X-rect.X, e.Location.Y-rect.Y);
             pen.Dispose();
             bmp.Dispose();
             bmpZoom.Dispose();
@@ -113,11 +118,12 @@ namespace GetColor
 
         private void ColorPicker_Load(object sender, EventArgs e)
         {
-            bmp = ScreenPicture.GetFullScreen();
+            bmp = ScreenPicture.GetFullScreen(rect.X,rect.Y,rect.Width,rect.Height);
             pictureBox.Image = bmp;
             base.TopMost = true;
             base.FormBorderStyle = FormBorderStyle.None;
-            base.WindowState = FormWindowState.Maximized;
+            if (Screen.AllScreens.Length == 1)
+                base.WindowState = FormWindowState.Maximized;
         }
 
         private void pnlColorWindow_MouseDown(object sender, MouseEventArgs e)
