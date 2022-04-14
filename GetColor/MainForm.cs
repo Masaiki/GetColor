@@ -142,7 +142,7 @@ namespace GetColor
                 txtRGB.Text = string.Format("{0,2:X2}{1,2:X2}{2,2:X2}", backColor.R.ToString("X"), backColor.G.ToString("X"), backColor.B.ToString("X")).Replace(" ", "0");
                 txtRGBdec.Text = $"{backColor.R.ToString()} {backColor.G.ToString()} {backColor.B.ToString()}";
                 txtARGB.Text = string.Format("{0,3:D3} {1,3:D3} {2,3:D3} {3,2:D3}", backColor.A, backColor.R, backColor.G, backColor.B);
-                txtBGR.Text = string.Format("&H00{0,2:X2}{1,2:X2}{2,2:X2}", backColor.B.ToString("X"), backColor.G.ToString("X"), backColor.R.ToString("X")).Replace(" ", "0");
+                txtBGR.Text = string.Format("&H{0,2:X2}{1,2:X2}{2,2:X2}&", backColor.B.ToString("X"), backColor.G.ToString("X"), backColor.R.ToString("X")).Replace(" ", "0");
                 int num = (int)((double)(backColor.GetHue() / 360f * 240f) + 0.5);
                 int num2 = (int)((double)(backColor.GetSaturation() * 241f) + 0.5);
                 int num3 = (int)((double)(backColor.GetBrightness() * 241f) + 0.5);
